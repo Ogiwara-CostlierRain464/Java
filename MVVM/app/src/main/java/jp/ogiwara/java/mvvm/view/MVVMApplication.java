@@ -1,0 +1,52 @@
+package jp.ogiwara.java.mvvm.view;
+
+import android.app.Application;
+import android.util.Log;
+
+import jp.ogiwara.java.mvvm.model.GitHubService;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+/**
+ * Created by ogiwara on 2017/05/05.
+ */
+
+public class MVVMApplication extends Application {
+    private GitHubService gitHubService;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // どのActivityからでもAPIを利用できるように、このクラスでAPIを利用する
+        setupAPIClient();
+    }
+
+    private void setupAPIClient() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                Log.d("API LOG", message);
+            }
+        });
+
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(logging).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .baseUrl("https://api.github.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        gitHubService = retrofit.create(GitHubService.class);
+    }
+
+    public GitHubService getGitHubService() {
+        return gitHubService;
+    }
+}

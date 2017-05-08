@@ -1,0 +1,17 @@
+group 'jp.ogiwara.test'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.jsoup:jsoup:1.7.3'
+    compile 'com.google.http-client:google-http-client:1.19.0'
+    compile 'org.apache.commons:commons-lang3:3.0'
+}
