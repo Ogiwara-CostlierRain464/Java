@@ -1,6 +1,7 @@
 package jp.ogiwara.test.java.rxjava
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.brianegan.bansa.Store
@@ -12,7 +13,10 @@ import trikita.anvil.DSL.*
 
 class RootView(c: Context,val store: Store<ApplicationState>): RenderableView(c){
 
+    val TAG = "RootView"
+
     override fun view() {
+        Log.d(TAG,"view")
         template(buildPresentationModel())
     }
 
@@ -37,6 +41,7 @@ class RootView(c: Context,val store: Store<ApplicationState>): RenderableView(c)
             orientation(LinearLayout.VERTICAL)
 
             textView {
+                gravity(BaseDSL.CENTER_VERTICAL)
                 text("Counts: ${counter.toString()}")
             }
 
@@ -63,7 +68,8 @@ class RootView(c: Context,val store: Store<ApplicationState>): RenderableView(c)
         super.onAttachedToWindow()
 
         subscription = store.subscribe {
-            Anvil.render()
+            Log.d(TAG,"render")//差分レンダリング
+            Anvil.render()//この後にviewが呼びだし
         }
     }
 
